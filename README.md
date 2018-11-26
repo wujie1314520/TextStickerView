@@ -1,4 +1,4 @@
-# TextStickerViewDemo
+# TextStickerView自定义强大的文本编辑控件
 可以拖动，旋转，缩放，删除的文本编辑控件，再次点击可以进一步编辑，选择文本颜色
 #单击floatButton添加文字
 ![image](https://github.com/wujie1314520/TextStickerViewDemo/raw/master/screenshot/screenshot1.jpg)
