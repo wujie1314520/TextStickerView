@@ -10,4 +10,4 @@ TextStickerView mTextStickerView = new TextStickerView(this, null);
         layoutparams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         mTextStickerView.setLayoutParams(layoutparams);
         mRlContainer.addView(mTextStickerView);
-```java
+```
