@@ -12,9 +12,11 @@ import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+
 import com.freesub.wujie.textstickerviewdemo.R;
 import com.freesub.wujie.textstickerviewdemo.utils.RectUtil;
 
@@ -23,6 +25,8 @@ import com.freesub.wujie.textstickerviewdemo.utils.RectUtil;
  * 文本贴图处理控件
  */
 public class TextStickerView extends View {
+    protected static final String TAG = TextStickerView.class.getSimpleName();
+
     public final int TEXT_SIZE_DEFAULT = getResources().getDimensionPixelSize(R.dimen.fontsize_default);
 //    public final int PADDING = getResources().getDimensionPixelSize(R.dimen.font_padding);
     public final int PADDING = 32;
@@ -225,18 +229,61 @@ public class TextStickerView extends View {
         int x = _x;
         int y = _y;
 
-        mPaint.getTextBounds(mText, 0, mText.length(), mTextRect);
-        mTextRect.offset(x - (mTextRect.width() >> 1), y);
+        //判断一下是否有换行
+        if(!mText.contains("\n")) {
+            //如果没有换行
+            mPaint.getTextBounds(mText, 0, mText.length(), mTextRect);
+            //获取文字所占区域最小矩形
+            Log.e(TAG, mTextRect.toShortString());
+            mTextRect.offset(x - (mTextRect.width() >> 1), y);
 
-        mHelpBoxRect.set(mTextRect.left - PADDING, mTextRect.top - PADDING
-                , mTextRect.right + PADDING, mTextRect.bottom + PADDING);
-        RectUtil.scaleRect(mHelpBoxRect, scale);
+            mHelpBoxRect.set(mTextRect.left - PADDING, mTextRect.top - PADDING
+                    , mTextRect.right + PADDING, mTextRect.bottom + PADDING);
+            RectUtil.scaleRect(mHelpBoxRect, scale);
 
-        canvas.save();
-        canvas.scale(scale, scale, mHelpBoxRect.centerX(), mHelpBoxRect.centerY());
-        canvas.rotate(rotate, mHelpBoxRect.centerX(), mHelpBoxRect.centerY());
-        canvas.drawText(mText, x, y, mPaint);
-        canvas.restore();
+            canvas.save();
+            canvas.scale(scale, scale, mHelpBoxRect.centerX(), mHelpBoxRect.centerY());
+            canvas.rotate(rotate, mHelpBoxRect.centerX(), mHelpBoxRect.centerY());
+            canvas.drawText(mText, x, y, mPaint);
+            canvas.restore();
+
+        } else {
+            //有换行
+            String[] textSubs = mText.split("\n");
+            //textSubs[]中字符串长度最长的
+            int indexOfMax = 0;
+            for(int i = 1; i < textSubs.length; i++) {
+                if(textSubs[indexOfMax].length() < textSubs[i].length()) {
+                    indexOfMax = i;
+                }
+            }
+            //测量
+            mPaint.getTextBounds(mText, 0, textSubs[indexOfMax].length(), mTextRect);
+
+            mTextRect.bottom = (TEXT_SIZE_DEFAULT + mTextRect.bottom - 10) * textSubs.length;
+
+            //获取文字所占区域最小矩形
+            Log.e(TAG, mTextRect.toShortString());
+
+            //矩形的中心点
+            mTextRect.offset(x - (mTextRect.width() >> 1), y);
+
+            mHelpBoxRect.set(mTextRect.left - PADDING, mTextRect.top - PADDING
+                    , mTextRect.right + PADDING, mTextRect.bottom + PADDING);
+            RectUtil.scaleRect(mHelpBoxRect, scale);
+
+            canvas.save();
+            canvas.scale(scale, scale, mHelpBoxRect.centerX(), mHelpBoxRect.centerY());
+            canvas.rotate(rotate, mHelpBoxRect.centerX(), mHelpBoxRect.centerY());
+
+            //字符串所占的高度
+            for(int i = 0; i < textSubs.length; i++) {
+                //一行一行画
+                canvas.drawText(textSubs[i], x, y + (i * (mTextRect.bottom - mTextRect.top) / textSubs.length), mPaint);
+            }
+            canvas.restore();
+        }
+
     }
 
     @Override

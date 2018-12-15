@@ -1,7 +1,7 @@
 package com.freesub.wujie.textstickerviewdemo;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,6 +16,7 @@ import com.freesub.wujie.textstickerviewdemo.view.TextStickerView;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
+
 import java.util.ArrayList;
 import java.util.List;
 
